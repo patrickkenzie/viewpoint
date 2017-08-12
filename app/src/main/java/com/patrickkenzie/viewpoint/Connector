@@ -1,0 +1,10 @@
+package com.patrickkenzie.viewpoint
+
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.connection.Connections;
+
+class Connection : GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallback {
+    init {
+
+    }
+}
