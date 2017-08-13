@@ -10,11 +10,12 @@ import com.google.android.gms.nearby.connection.*
 
 val LOG_TAG = "Viewpoint"
 
-class ConnectionClient(val context: Context) :
+class ConnectionClient(val context: Context, val isHosting: Boolean) :
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     val CONNECTION_STRATEGY = Strategy.P2P_STAR;
+    val packageName = context.packageName
 
     val client: GoogleApiClient = GoogleApiClient.Builder(context)
             .addApi(Nearby.CONNECTIONS_API)
@@ -25,7 +26,18 @@ class ConnectionClient(val context: Context) :
     var endpointName = ""
     var endpointId = ""
 
-    val payloadCallback = object : PayloadCallback() {
+    val hostPayloadCallback = object:PayloadCallback() {
+        override fun onPayloadReceived(p0: String?, p1: Payload?) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun onPayloadTransferUpdate(p0: String?, p1: PayloadTransferUpdate?) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+    }
+
+    val cameraPayloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(id: String?, payload: Payload?) {
             if (payload?.type == Payload.Type.BYTES) {
                 val bytes = payload.asBytes()
@@ -49,6 +61,7 @@ class ConnectionClient(val context: Context) :
         }
 
         override fun onConnectionInitiated(id: String?, info: ConnectionInfo?) {
+            val payloadCallback = if (isHosting) hostPayloadCallback else cameraPayloadCallback
             Nearby.Connections.acceptConnection(client, id, payloadCallback)
         }
 
@@ -70,34 +83,41 @@ class ConnectionClient(val context: Context) :
     }
 
     override fun onConnected(data: Bundle?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d(LOG_TAG, "onConnected")
     }
 
     override fun onConnectionSuspended(id: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d(LOG_TAG, "onConnectionSuspended")
     }
 
     override fun onConnectionFailed(result: ConnectionResult) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d(LOG_TAG, "onConnectionFailed")
     }
 
-    fun connect() = client.connect()
-    fun disconnect() = client.disconnect()
+    fun stop() = client.disconnect()
+    fun start() {
+        client.connect()
+        if (this.isHosting) this.startHosting() else this.startLooking()
+    }
 
     fun handleMessage(message: Any) {
 
     }
 
     fun startHosting() {
-
+        val advertise = AdvertisingOptions(CONNECTION_STRATEGY)
+        Nearby.Connections.startAdvertising(client, packageName, "TestDevice", connectionLifecycleCallback, advertise)
+                .setResultCallback { result ->
+                    Log.d(LOG_TAG, "startHosting: " + result.status)
+                }
     }
 
-    fun startLooking(serviceId: String) {
+    fun startLooking() {
         // Spinner
         val discovery = DiscoveryOptions(CONNECTION_STRATEGY)
-        Nearby.Connections.startDiscovery(client, serviceId, endpointFound, discovery)
+        Nearby.Connections.startDiscovery(client, packageName, endpointFound, discovery)
                 .setResultCallback { result ->
-                    Log.d(LOG_TAG, "StartLooking: " + result.statusMessage)
+                    Log.d(LOG_TAG, "startLooking: " + result.statusMessage)
                 }
     }
 }

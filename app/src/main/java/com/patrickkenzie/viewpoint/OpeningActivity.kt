@@ -21,7 +21,7 @@ class OpeningActivity : AppCompatActivity() {
         setContentView(R.layout.activity_opening)
         setSupportActionBar(toolbar)
 
-        client = ConnectionClient(this)
+        client = ConnectionClient(this, false)
         fab.setOnClickListener(this::beginHosting)
     }
 
@@ -44,20 +44,20 @@ class OpeningActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        client?.connect()
+        client?.start()
     }
 
     override fun onStop() {
         super.onStop()
 
-        client?.disconnect()
+        client?.stop()
     }
 
     fun beginHosting(view: View)  {
         // TODO Start hosting activity
         // List of viewpoints
         // Start Session
-        val intent = Intent(this.applicationContext, OpeningActivity::class.java)
+        val intent = Intent(this.applicationContext, HostingActivity::class.java)
 
         startActivity(intent)
     }

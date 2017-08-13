@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_hosting.*
 
 class HostingActivity : AppCompatActivity() {
+    var client: ConnectionClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hosting)
         setSupportActionBar(toolbar)
+
+        client = ConnectionClient(this.applicationContext, true)
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -20,4 +23,15 @@ class HostingActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        client?.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        client?.stop()
+    }
 }
