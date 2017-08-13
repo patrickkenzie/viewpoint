@@ -8,7 +8,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.*
 
-val LOG_TAG = "Viewpoint"
+val LOG_TAG = "ViewpointLog"
 
 class ConnectionClient(val context: Context, val isHosting: Boolean) :
         GoogleApiClient.ConnectionCallbacks,
@@ -84,6 +84,7 @@ class ConnectionClient(val context: Context, val isHosting: Boolean) :
 
     override fun onConnected(data: Bundle?) {
         Log.d(LOG_TAG, "onConnected")
+        if (this.isHosting) this.startHosting() else this.startLooking()
     }
 
     override fun onConnectionSuspended(id: Int) {
@@ -94,11 +95,8 @@ class ConnectionClient(val context: Context, val isHosting: Boolean) :
         Log.d(LOG_TAG, "onConnectionFailed")
     }
 
+    fun start() = client.connect()
     fun stop() = client.disconnect()
-    fun start() {
-        client.connect()
-        if (this.isHosting) this.startHosting() else this.startLooking()
-    }
 
     fun handleMessage(message: Any) {
 
