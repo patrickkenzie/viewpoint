@@ -1,7 +1,7 @@
 package com.patrickkenzie.viewpoint
 
+import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -11,12 +11,18 @@ import kotlinx.android.synthetic.main.activity_opening.*
 
 class OpeningActivity : AppCompatActivity() {
 
+    var endpointName = ""
+    var endpointId = ""
+
+    var client: ConnectionClient? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_opening)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener(this::startHosting)
+        client = ConnectionClient(this)
+        fab.setOnClickListener(this::beginHosting)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -35,16 +41,25 @@ class OpeningActivity : AppCompatActivity() {
         }
     }
 
-    fun startHosting(view: View)  {
-        // Spinner
-        // List of viewpoints
-        // Start Session
-        Snackbar.make(view, "Test", Snackbar.LENGTH_SHORT)
-        Snackbar.make(view, "Looking for other viewpoints...", Snackbar.LENGTH_LONG)
-                .show()
+    override fun onStart() {
+        super.onStart()
+
+        client?.connect()
     }
 
-    fun startLooking(view: View) {
-        // Spinner
+    override fun onStop() {
+        super.onStop()
+
+        client?.disconnect()
     }
+
+    fun beginHosting(view: View)  {
+        // TODO Start hosting activity
+        // List of viewpoints
+        // Start Session
+        val intent = Intent(this.applicationContext, OpeningActivity::class.java)
+
+        startActivity(intent)
+    }
+
 }
