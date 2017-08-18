@@ -5,9 +5,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 
 import kotlinx.android.synthetic.main.activity_hosting.*
+import kotlin.properties.Delegates
 
 class HostingActivity : AppCompatActivity() {
-    var client: ConnectionClient? = null
+    var client: ConnectionClient by Delegates.notNull()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,13 +25,13 @@ class HostingActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        client?.start()
+        client.start()
     }
 
     override fun onStop() {
         super.onStop()
 
-        client?.stop()
+        client.stop()
     }
 
     fun startRecordingListener(view: View) {
