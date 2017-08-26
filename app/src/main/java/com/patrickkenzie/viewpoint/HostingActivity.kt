@@ -1,16 +1,23 @@
 package com.patrickkenzie.viewpoint
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+amport android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.google.android.gms.common.GoogleApiAvailability
+import com.patrickkenzie.viewpoint.video.Camera2VideoFragment
 
 import kotlinx.android.synthetic.main.activity_hosting.*
 import kotlin.properties.Delegates
 
 class HostingActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver {
+    val fragmentTag = "fraggy"
+
     override fun onClientInit() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val trans = supportFragmentManager.beginTransaction()
+
+        val video = Camera2VideoFragment()
+        trans.add(R.id.container, video, fragmentTag)
+        trans.commit()
     }
 
     override fun onConnectionCreated() {
