@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.camera2video;
+package com.patrickkenzie.viewpoint.video;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -2,4 +2,6 @@
     <string name="app_name">Viewpoint</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_hosting">HostingActivity</string>
+    <string name="permission_request">Please?</string>
+    <string name="camera_error">Error opening camera</string>
 </resources>

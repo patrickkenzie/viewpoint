@@ -3,14 +3,31 @@ package com.patrickkenzie.viewpoint
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.google.android.gms.common.GoogleApiAvailability
 
 import kotlinx.android.synthetic.main.activity_opening.*
 import kotlin.properties.Delegates
 
-class OpeningActivity : AppCompatActivity() {
+class OpeningActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver {
+    override fun onClientInit() {
+        Log.d(LOG_TAG, "onClientInit")
+    }
+
+    override fun onConnectionCreated() {
+        Log.d(LOG_TAG, "onConnectionCreated")
+    }
+
+    override fun onConnectionFailed(errorCode: Int) {
+        val api = GoogleApiAvailability.getInstance()
+
+        val dialog = api.getErrorDialog(this,  errorCode, 1)
+
+        dialog.show()
+    }
 
     var endpointName = ""
     var endpointId = ""
@@ -22,7 +39,7 @@ class OpeningActivity : AppCompatActivity() {
         setContentView(R.layout.activity_opening)
         setSupportActionBar(toolbar)
 
-        client = ConnectionClient(this, false)
+        client = ConnectionClient(this, this, false)
         fab.setOnClickListener(this::beginHosting)
     }
 
@@ -54,8 +71,11 @@ class OpeningActivity : AppCompatActivity() {
         client.stop()
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     fun beginHosting(view: View)  {
-        // TODO Start hosting activity
         // List of viewpoints
         // Start Session
         val intent = Intent(this.applicationContext, HostingActivity::class.java)

@@ -4,15 +4,24 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.*
 
+
 val LOG_TAG = "ViewpointLog"
 
-class ConnectionClient(val context: Context, val isHosting: Boolean) :
+class ConnectionClient(val context: Context, val observer: ConnectionObserver, val isHosting: Boolean) :
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
+    interface ConnectionObserver {
+        fun onClientInit()
+        fun onConnectionCreated()
+        fun onConnectionFailed(errorCode: Int)
+    }
 
     val CONNECTION_STRATEGY = Strategy.P2P_STAR;
     val packageName = context.packageName
@@ -25,7 +34,6 @@ class ConnectionClient(val context: Context, val isHosting: Boolean) :
 
     var endpointName = ""
     var endpointId = ""
-
     val hostPayloadCallback = object:PayloadCallback() {
         override fun onPayloadReceived(p0: String?, p1: Payload?) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -63,6 +71,8 @@ class ConnectionClient(val context: Context, val isHosting: Boolean) :
         override fun onConnectionInitiated(id: String?, info: ConnectionInfo?) {
             val payloadCallback = if (isHosting) hostPayloadCallback else cameraPayloadCallback
             Nearby.Connections.acceptConnection(client, id, payloadCallback)
+
+            observer.onConnectionCreated()
         }
 
     }
@@ -82,9 +92,15 @@ class ConnectionClient(val context: Context, val isHosting: Boolean) :
         }
     }
 
+    init {
+        client.connect()
+    }
+
     override fun onConnected(data: Bundle?) {
         Log.d(LOG_TAG, "onConnected")
         if (this.isHosting) this.startHosting() else this.startLooking()
+
+        observer.onClientInit()
     }
 
     override fun onConnectionSuspended(id: Int) {
@@ -93,6 +109,8 @@ class ConnectionClient(val context: Context, val isHosting: Boolean) :
 
     override fun onConnectionFailed(result: ConnectionResult) {
         Log.d(LOG_TAG, "onConnectionFailed")
+
+        observer.onConnectionFailed(result.errorCode)
     }
 
     fun start() = client.connect()

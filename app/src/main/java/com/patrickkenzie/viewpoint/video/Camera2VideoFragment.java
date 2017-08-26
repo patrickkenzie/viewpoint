@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.camera2video;
+package com.patrickkenzie.viewpoint.video;
 
 import android.Manifest;
 import android.app.Activity;
@@ -54,6 +54,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.patrickkenzie.viewpoint.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -275,13 +277,13 @@ public class Camera2VideoFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera2_video, container, false);
+        return inflater.inflate(R.layout.fragment_video_recording, container, false);
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-        mButtonVideo = (Button) view.findViewById(R.id.video);
+        //mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        //mButtonVideo = (Button) view.findViewById(R.id.video);
         mButtonVideo.setOnClickListener(this);
         view.findViewById(R.id.info).setOnClickListener(this);
     }
@@ -306,7 +308,7 @@ public class Camera2VideoFragment extends Fragment
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
+        /*switch (view.getId()) {
             case R.id.video: {
                 if (mIsRecordingVideo) {
                     stopRecordingVideo();
@@ -325,7 +327,7 @@ public class Camera2VideoFragment extends Fragment
                 }
                 break;
             }
-        }
+        }*/
     }
 
     /**
@@ -644,7 +646,7 @@ public class Camera2VideoFragment extends Fragment
                         @Override
                         public void run() {
                             // UI
-                            mButtonVideo.setText(R.string.stop);
+                            //mButtonVideo.setText(R.string.stop);
                             mIsRecordingVideo = true;
 
                             // Start recording
@@ -677,7 +679,7 @@ public class Camera2VideoFragment extends Fragment
     private void stopRecordingVideo() {
         // UI
         mIsRecordingVideo = false;
-        mButtonVideo.setText(R.string.record);
+        //mButtonVideo.setText(R.string.record);
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
