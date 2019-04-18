@@ -78,7 +78,7 @@ class OpeningActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver
     fun beginHosting(view: View)  {
         // List of viewpoints
         // Start Session
-        val intent = Intent(this.applicationContext, HostingActivity::class.java)
+        val intent = Intent(this, HostingActivity::class.java)
 
         startActivity(intent)
     }

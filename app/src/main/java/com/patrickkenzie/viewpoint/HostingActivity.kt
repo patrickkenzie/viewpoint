@@ -1,7 +1,8 @@
 package com.patrickkenzie.viewpoint
 
 import android.os.Bundle
-amport android.support.v7.app.AppCompatActivity
+import android.support.v7.app.AppCompatActivity
+
 import android.view.View
 import com.google.android.gms.common.GoogleApiAvailability
 import com.patrickkenzie.viewpoint.video.Camera2VideoFragment
@@ -27,7 +28,7 @@ class HostingActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver
     override fun onConnectionFailed(errorCode: Int) {
         val api = GoogleApiAvailability.getInstance()
 
-        val dialog = api.getErrorDialog(this,  errorCode, 1)
+        val dialog = api.getErrorDialog(this, errorCode, 1)
 
         dialog.show()
     }
@@ -39,7 +40,7 @@ class HostingActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver
         setContentView(R.layout.activity_hosting)
         setSupportActionBar(toolbar)
 
-        client = ConnectionClient(this.applicationContext, this, true)
+        client = ConnectionClient(this, this, true)
 
         fab.setOnClickListener(this::startRecordingListener)
 
