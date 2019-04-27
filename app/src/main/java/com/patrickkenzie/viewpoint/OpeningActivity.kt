@@ -8,11 +8,19 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.google.android.gms.common.GoogleApiAvailability
+import com.patrickkenzie.viewpoint.connections.ActiveHost
+import com.patrickkenzie.viewpoint.connections.ActiveHostFragment
+import com.patrickkenzie.viewpoint.connections.ActiveHostFragment.OnListFragmentInteractionListener
 
 import kotlinx.android.synthetic.main.activity_opening.*
+import kotlinx.android.synthetic.main.content_opening.*
 import kotlin.properties.Delegates
 
-class OpeningActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver {
+class OpeningActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver, OnListFragmentInteractionListener {
+    override fun onListFragmentInteraction(host: ActiveHost?) {
+        Log.d(LOG_TAG, "host selected: " + host?.id)
+    }
+
     override fun onClientInit() {
         Log.d(LOG_TAG, "onClientInit")
     }
@@ -73,6 +81,10 @@ class OpeningActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver
 
     override fun onResume() {
         super.onResume()
+
+        var list = hostList as ActiveHostFragment
+        list.hostFound(ActiveHost("1234", "First Item"))
+        list.hostFound(ActiveHost("4321", "Second Item"))
     }
 
     fun beginHosting(view: View)  {
