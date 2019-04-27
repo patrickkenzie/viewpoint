@@ -1,24 +1,28 @@
 package com.patrickkenzie.viewpoint
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 import android.view.View
 import com.google.android.gms.common.GoogleApiAvailability
-import com.patrickkenzie.viewpoint.video.Camera2VideoFragment
 
 import kotlinx.android.synthetic.main.activity_hosting.*
 import kotlin.properties.Delegates
 
-class HostingActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver {
+class HostingActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver, CameraViewFragment.OnFragmentInteractionListener {
+    var client: ConnectionClient by Delegates.notNull()
+
+    override fun onRecordingError(err: Exception) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     val fragmentTag = "fraggy"
 
     override fun onClientInit() {
-        val trans = supportFragmentManager.beginTransaction()
-
-        val video = Camera2VideoFragment()
-        trans.add(R.id.container, video, fragmentTag)
-        trans.commit()
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.container, CameraViewFragment.newInstance(""), fragmentTag)
+                .commit()
     }
 
     override fun onConnectionCreated() {
@@ -32,8 +36,6 @@ class HostingActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver
 
         dialog.show()
     }
-
-    var client: ConnectionClient by Delegates.notNull()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +63,7 @@ class HostingActivity : AppCompatActivity(), ConnectionClient.ConnectionObserver
 
     fun startRecordingListener(view: View) {
         // Camera
-
+        val camera = supportFragmentManager.findFragmentByTag(fragmentTag) as CameraViewFragment
+        camera.startRecording()
     }
 }
